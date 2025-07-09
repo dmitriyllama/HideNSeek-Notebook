@@ -18,7 +18,7 @@
 
 <ContentBox>
     <Button on:click={goBack} color="white" background_color="#a11" shadow_color="#511">Return</Button>
-    <section>
+    <div class="info">
         <p>Your ruleset should include the following details, which are missing from the rulebook:</p>
         <ul>
             <li>Game size for your city;</li>
@@ -27,7 +27,7 @@
             <li>Time for play and rest periods;</li>
         </ul>
         <p>You will need to reference a rulebook from the <a class="inline-link" href="https://store.nebula.tv/products/hideandseek">physical copy of Hide+Seek</a> or the <a class="inline-link" href="https://jetlag.collinj.dev/docs/quick_start_guide/">unofficial online version by Collin James</a>.</p>
-    </section>
+    </div>
     <div class="input-box">
         <div class="input-field">
             <input class="name" aria-label="Ruleset name" type="text" placeholder="New Ruleset" minlength="5" maxlength="30" required />
@@ -49,7 +49,7 @@
 </ContentBox>
 
 <style>
-    section {
+    .info {
         margin: 30px 10px;
     }
 
