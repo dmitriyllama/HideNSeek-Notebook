@@ -2,9 +2,6 @@
 	import { goto } from '$app/navigation';
 	import Button from '$lib/components/Button.svelte';
 	import ContentBox from '$lib/components/ContentBox.svelte';
-    import type { PageData } from './$types';
-
-    let { data }: { data: PageData } = $props();
 
     let buttonColor = "white";
     let buttonBackgroundColor = "#1a1";
@@ -25,12 +22,12 @@
         rules: ""
     });
 
-    function isNameValid() {
+    function isNameLinkable() {
         return (nameInput.willValidate && (/^[a-zA-Z0-9 ,_-]*$/.test(fields.name)));
     }
 
-    let handleNameChange = () => {
-        if (isNameValid()) {
+    let handleNameChange = async () => {
+        if (isNameLinkable() && fields.name.length >= 5 && fields.name.length <= 30) {
             nameInput.classList.remove("invalid");
             nameInput.setAttribute("aria-invalid", "false");
         } else {
@@ -39,8 +36,49 @@
         }
     }
 
+    let errors: { error: string }[] = $state([])
+
     let handleSubmit = () => {
-        
+        let newErrors = [];
+        if (fields.name.length == 0) {
+            newErrors.push({error: "Name is empty."});
+        } else if (fields.name.length < 5) {
+            newErrors.push({error: "Name is too short."});
+        } else if (fields.name.length > 30) {
+            newErrors.push({error: "Name is too long."});
+        }
+        if (!isNameLinkable()) {
+            newErrors.push({error: "Name has unwanted symbols."});
+        }
+        if (fields.description.length == 0) {
+            newErrors.push({error: "Description is empty."});
+        } else if (fields.description.length < 16) {
+            newErrors.push({error: "Description is too short."});
+        } else if (fields.description.length > 240) {
+            newErrors.push({error: "Description is too long."});
+        }
+        if (fields.description.length == 0) {
+            newErrors.push({error: "Place name is empty."});
+        } else if (fields.place.length < 2) {
+            newErrors.push({error: "Place name is too short."});
+        } else if (fields.place.length > 26) {
+            newErrors.push({error: "Place name is too long."});
+        }
+        if (fields.teams < 2) {
+            newErrors.push({error: "Recommended teams amount can't be less than 2"});
+        } else if (fields.teams > 6) {
+            newErrors.push({error: "Recommended teams amount is too big"});
+        }
+        if (fields.players < 1) {
+            newErrors.push({error: "Recommended players per team can't be fewer than 1"});
+        } else if (fields.teams > 6) {
+            newErrors.push({error: "Recommended players per team shouldn't be more than 6"});
+        }
+        errors = newErrors;
+
+        if (errors.length == 0) {
+            // TODO stuff here
+        }
     }
 </script>
 
@@ -61,7 +99,7 @@
         </ul>
         <p>You will need to reference a rulebook from the <a class="inline-link" href="https://store.nebula.tv/products/hideandseek">physical copy of Hide+Seek</a> or the <a class="inline-link" href="https://jetlag.collinj.dev/docs/quick_start_guide/">unofficial online version by Collin James</a>.</p>
     </div>
-    <form onsubmit={handleSubmit} class="input-box">
+    <form class="input-box">
         <div class="input-field">
             <input class="name invalid" aria-label="Ruleset name" type="text" placeholder="New Ruleset" minlength="5" maxlength="30" required bind:value={fields.name} bind:this={nameInput} oninput={handleNameChange} />
         </div>
@@ -70,7 +108,7 @@
         </div>
         <hr>
         <div class="input-field">
-            <label class="hint" for="place">Town, city, or district:</label><input class="place" id="place" type="text" minlength="2" maxlength="24" required bind:value={fields.place} />
+            <label class="hint" for="place">Town, city, or district:</label><input class="place" id="place" type="text" placeholder="e.g. New York City" minlength="2" maxlength="26" required bind:value={fields.place} />
         </div>
         <div class="input-field">
             <span class="hint">Recommended players:</span>
@@ -82,8 +120,11 @@
         <hr>
         <span class="hint" style="display: block; width: 200px">Describe any specific rules</span>
         <textarea id="rules" rows=12 cols=40 placeholder="- Use JetLag's Small-size game rules" bind:value={fields.rules}></textarea>
+        {#each errors as error}
+            <div class="validation-error">{error.error}</div>
+        {/each}
         <div class="submit-area">
-            <Button large color={buttonColor} background_color={buttonBackgroundColor} shadow_color={buttonShadowColor}>Submit</Button>
+            <Button on:click={handleSubmit} large color={buttonColor} background_color={buttonBackgroundColor} shadow_color={buttonShadowColor}>Submit</Button>
         </div>
     </form>
 </ContentBox>
@@ -210,6 +251,16 @@
         display: flex;
         justify-content: center;
         margin-top: 10px;
+    }
+
+    .validation-error {
+        font-weight: 500;
+        color: #811;
+        margin-top: 0.4em;
+    }
+
+    .validation-error::before {
+        content: "\2022\20";
     }
 
     @media screen and (min-width: 450px) {
