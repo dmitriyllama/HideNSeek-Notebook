@@ -11,10 +11,15 @@
     }
 </script>
 
+<svelte:head>
+    <title>New Ruleset — Hide+Seek Notebook</title>
+    <meta name="description" content="Add a rule set for playing Hide and Seek in your location here!">
+</svelte:head>
+
 <ContentBox>
     <Button on:click={goBack} color="white" background_color="#a11" shadow_color="#511">Return</Button>
     <section>
-        <p>Your ruleset needs to add the following details, which are missing from the rulebook:</p>
+        <p>Your ruleset should include the following details, which are missing from the rulebook:</p>
         <ul>
             <li>Game size for your city;</li>
             <li>Teams and team size;</li>
@@ -25,14 +30,14 @@
     </section>
     <div class="input-box">
         <div class="input-field">
-            <input class="name" type="text" placeholder="New Ruleset" minlength="5" maxlength="30" required />
+            <input class="name" aria-label="Ruleset name" type="text" placeholder="New Ruleset" minlength="5" maxlength="30" required />
         </div>
         <div class="input-field">
-            <input class="description" type="text" placeholder="Description" minlength="16" maxlength="240" required />
+            <input class="description" aria-label="Ruleset description" type="text" placeholder="Description" minlength="16" maxlength="240" required />
         </div>
         <hr>
         <div class="input-field">
-            <span class="hint">Town, city, or district:</span><input class="place" id="place" type="text" minlength="2" maxlength="24" required />
+            <label class="hint" for="place">Town, city, or district:</label><input class="place" id="place" type="text" minlength="2" maxlength="24" required />
         </div>
         <div class="input-field">
             <span class="hint">Recommended players:</span><input class="players" aria-label="Recommended team count" id="teams" type="number" min=2 max=6 required /><i>teams of</i><input class="players" aria-label="Recommended players per team" id="players" type="number" min=1 max=6 required /><i class="desktop-hint">players</i>
@@ -104,7 +109,7 @@
         border-left: 1px dotted #333;
         border-bottom: 3px solid #333;
         border-radius: 4px;
-        padding: 0.2em;
+        padding: 0.2em 4px;
     }
 
     input:valid {
@@ -122,7 +127,6 @@
         font-size: 2rem;
         font-weight: 500;
         width: 100%;
-        max-width: 600px;
     }
 
     .description {
@@ -145,8 +149,8 @@
         appearance: none;
         font-size: 1.1rem;
         font-weight: 500;
-        height: 1.5em;
-        width: 2em;
+        height: 2em;
+        width: 2.5em;
         margin-left: 0.5em;
         margin-right: 0.5em;
     }
