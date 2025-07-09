@@ -6,8 +6,37 @@
 
     let { data }: { data: PageData } = $props();
 
+    let buttonColor = "white";
+    let buttonBackgroundColor = "#1a1";
+    let buttonShadowColor = "#151";
+
+    let nameInput: HTMLInputElement;
+
     let goBack = () => {
         goto("/rulesets");
+    }
+
+    let fields = $state({
+        name: "",
+        description: "",
+        place: "",
+        teams: 2,
+        players: 1,
+        rules: ""
+    });
+
+    let handleNameChange = () => {
+        if (!(/^[a-zA-Z0-9 ]*$/.test(fields.name))) {
+            nameInput.classList.add("invalid");
+            nameInput.setAttribute("aria-invalid", "true");
+        } else if (nameInput.willValidate) {
+            nameInput.classList.remove("invalid");
+            nameInput.setAttribute("aria-invalid", "false");
+        }
+    }
+
+    let handleSubmit = () => {
+
     }
 </script>
 
@@ -28,24 +57,31 @@
         </ul>
         <p>You will need to reference a rulebook from the <a class="inline-link" href="https://store.nebula.tv/products/hideandseek">physical copy of Hide+Seek</a> or the <a class="inline-link" href="https://jetlag.collinj.dev/docs/quick_start_guide/">unofficial online version by Collin James</a>.</p>
     </div>
-    <div class="input-box">
+    <form onsubmit={handleSubmit} class="input-box">
         <div class="input-field">
-            <input class="name" aria-label="Ruleset name" type="text" placeholder="New Ruleset" minlength="5" maxlength="30" required />
+            <input class="name invalid" aria-label="Ruleset name" type="text" placeholder="New Ruleset" minlength="5" maxlength="30" required bind:value={fields.name} bind:this={nameInput} oninput={handleNameChange} />
         </div>
         <div class="input-field">
-            <input class="description" aria-label="Ruleset description" type="text" placeholder="Description" minlength="16" maxlength="240" required />
+            <input class="description" aria-label="Ruleset description" type="text" placeholder="Description" minlength="16" maxlength="240" required bind:value={fields.description} />
         </div>
         <hr>
         <div class="input-field">
-            <label class="hint" for="place">Town, city, or district:</label><input class="place" id="place" type="text" minlength="2" maxlength="24" required />
+            <label class="hint" for="place">Town, city, or district:</label><input class="place" id="place" type="text" minlength="2" maxlength="24" required bind:value={fields.place} />
         </div>
         <div class="input-field">
-            <span class="hint">Recommended players:</span><input class="players" aria-label="Recommended team count" id="teams" type="number" min=2 max=6 required /><i>teams of</i><input class="players" aria-label="Recommended players per team" id="players" type="number" min=1 max=6 required /><i class="desktop-hint">players</i>
+            <span class="hint">Recommended players:</span>
+            <input class="players" aria-label="Recommended team count" id="teams" type="number" min=2 max=6 required bind:value={fields.teams} />
+            <i>teams of</i>
+            <input class="players" aria-label="Recommended players per team" id="players" type="number" min=1 max=6 required bind:value={fields.players} />
+            <i class="desktop-hint">players</i>
         </div>
         <hr>
         <span class="hint" style="display: block; width: 200px">Describe any specific rules</span>
-        <textarea id="rules" rows=12 cols=40 placeholder="- Use JetLag's Small-size game rules"></textarea>
-    </div>
+        <textarea id="rules" rows=12 cols=40 placeholder="- Use JetLag's Small-size game rules" bind:value={fields.rules}></textarea>
+        <div class="submit-area">
+            <Button large color={buttonColor} background_color={buttonBackgroundColor} shadow_color={buttonShadowColor}>Submit</Button>
+        </div>
+    </form>
 </ContentBox>
 
 <style>
@@ -102,12 +138,6 @@
     input {
         display: inline-block;
         box-sizing: border-box;
-        background-color: #e5e5e5;
-        color: #333;
-        border-top: 1px dotted #333;
-        border-right: 1px dotted #333;
-        border-left: 1px dotted #333;
-        border-bottom: 3px solid #333;
         border-radius: 4px;
         padding: 0.2em 4px;
     }
@@ -121,6 +151,15 @@
         border-right: 1px dotted #666;
         border-left: 1px dotted #666;
         border-bottom: 2px solid #181;
+    }
+
+    input:invalid, .invalid {
+        background-color: #e5e5e5 !important;
+        color: #333 !important;
+        border-top: 1px dotted #333 !important;
+        border-right: 1px dotted #333 !important;
+        border-left: 1px dotted #333 !important;
+        border-bottom: 3px solid #333 !important;
     }
 
     .name {
@@ -161,6 +200,12 @@
         max-height: 30em;
         margin-top: 10px;
         padding: 0.8em;
+    }
+
+    .submit-area {
+        display: flex;
+        justify-content: center;
+        margin-top: 10px;
     }
 
     @media screen and (min-width: 450px) {
