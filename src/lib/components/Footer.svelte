@@ -6,13 +6,12 @@
         text-align: center;
         color: #aaa;
         font-size: 0.9rem;
-        position: absolute;
-        width:100%;
-        bottom:0px;
-    }
+        width: 100%;
+        margin-top: 30px;
+        }
     div {
         border-top: 1px solid #aaa;
-        max-width: 600px;
+        max-width: 768px;
         padding: 1em 10px;
         margin: 0 auto;
     }
