@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
 	import Button from '$lib/components/Button.svelte';
 	import ContentBox from '$lib/components/ContentBox.svelte';
@@ -38,46 +39,60 @@
 
     let errors: { error: string }[] = $state([])
 
-    let handleSubmit = () => {
+    let handleSubmit = async (event: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement}) => {
+        event.preventDefault();
+
         let newErrors = [];
-        if (fields.name.length == 0) {
-            newErrors.push({error: "Name is empty."});
-        } else if (fields.name.length < 5) {
-            newErrors.push({error: "Name is too short."});
-        } else if (fields.name.length > 30) {
-            newErrors.push({error: "Name is too long."});
-        }
-        if (!isNameLinkable()) {
-            newErrors.push({error: "Name has unwanted symbols."});
-        }
-        if (fields.description.length == 0) {
-            newErrors.push({error: "Description is empty."});
-        } else if (fields.description.length < 16) {
-            newErrors.push({error: "Description is too short."});
-        } else if (fields.description.length > 240) {
-            newErrors.push({error: "Description is too long."});
-        }
-        if (fields.description.length == 0) {
-            newErrors.push({error: "Place name is empty."});
-        } else if (fields.place.length < 2) {
-            newErrors.push({error: "Place name is too short."});
-        } else if (fields.place.length > 26) {
-            newErrors.push({error: "Place name is too long."});
-        }
-        if (fields.teams < 2) {
-            newErrors.push({error: "Recommended teams amount can't be less than 2"});
-        } else if (fields.teams > 6) {
-            newErrors.push({error: "Recommended teams amount is too big"});
-        }
-        if (fields.players < 1) {
-            newErrors.push({error: "Recommended players per team can't be fewer than 1"});
-        } else if (fields.teams > 6) {
-            newErrors.push({error: "Recommended players per team shouldn't be more than 6"});
-        }
+        if (fields.name.length == 0) newErrors.push({error: "Name is empty."});
+        else if (fields.name.length < 5) newErrors.push({error: "Name is too short."});
+        else if (fields.name.length > 30) newErrors.push({error: "Name is too long."});
+
+        if (!isNameLinkable()) newErrors.push({error: "Name has unwanted symbols."});
+
+        if (fields.description.length == 0) newErrors.push({error: "Description is empty."});
+        else if (fields.description.length < 16) newErrors.push({error: "Description is too short."});
+        else if (fields.description.length > 240) newErrors.push({error: "Description is too long."});
+    
+        if (fields.description.length == 0) newErrors.push({error: "Place name is empty."});
+        else if (fields.place.length < 2) newErrors.push({error: "Place name is too short."});
+        else if (fields.place.length > 26) newErrors.push({error: "Place name is too long."});
+
+        if (fields.teams < 2) newErrors.push({error: "Recommended teams amount can't be less than 2"});
+        else if (fields.teams > 6) newErrors.push({error: "Recommended teams amount is too big"});
+    
+        if (fields.players < 1) newErrors.push({error: "Recommended players per team can't be fewer than 1"});
+        else if (fields.teams > 6) newErrors.push({error: "Recommended players per team shouldn't be more than 6"});
+
+        if (fields.rules.length > 1000) newErrors.push({error: "Rules section is too long"});
+
         errors = newErrors;
 
         if (errors.length == 0) {
-            // TODO stuff here
+            const formData = new FormData(event.currentTarget);
+            formData.append('name', fields.name);
+            formData.append('description', fields.description);
+            formData.append('place', fields.place);
+            formData.append('teams', fields.teams.toString());
+            formData.append('players', fields.players.toString());
+            formData.append('rules', fields.rules);
+
+            const response = await fetch(event.currentTarget.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'x-sveltekit-action': 'true'
+                }
+            });
+
+            const result = await response.json();
+
+            if (result.status === 400) {
+                errors = [{ error: 'Invalid submission' }];
+            } else if (!response.ok) {
+                errors = [{ error: 'Server error: ' + response.status }];
+            } else {
+                goto("/rulesets");
+            }
         }
     }
 </script>
@@ -97,9 +112,9 @@
             <li>Transit methods and other map boundaries;</li>
             <li>Time for play and rest periods;</li>
         </ul>
-        <p>You will need to reference a rulebook from the <a class="inline-link" href="https://store.nebula.tv/products/hideandseek">physical copy of Hide+Seek</a> or the <a class="inline-link" href="https://jetlag.collinj.dev/docs/quick_start_guide/">unofficial online version by Collin James</a>.</p>
+        <p>You will need to reference a rulebook from the <a class="inline-link" href="https://store.nebula.tv/products/hideandseek" target="_blank">physical copy of Hide+Seek</a> or the <a class="inline-link" href="https://jetlag.collinj.dev/docs/quick_start_guide/" target="_blank">unofficial online version by Collin James</a>.</p>
     </div>
-    <form class="input-box">
+    <form class="input-box" method="POST" onsubmit={handleSubmit}>
         <div class="input-field">
             <input class="name invalid" aria-label="Ruleset name" type="text" placeholder="New Ruleset" minlength="5" maxlength="30" required bind:value={fields.name} bind:this={nameInput} oninput={handleNameChange} />
         </div>
@@ -119,12 +134,12 @@
         </div>
         <hr>
         <span class="hint" style="display: block; width: 200px">Describe any specific rules</span>
-        <textarea id="rules" rows=12 cols=40 placeholder="- Use JetLag's Small-size game rules" bind:value={fields.rules}></textarea>
+        <textarea id="rules" rows=12 cols=40 placeholder="- Use JetLag's Small-size game rules" maxlength="1000" bind:value={fields.rules}></textarea>
         {#each errors as error}
             <div class="validation-error">{error.error}</div>
         {/each}
         <div class="submit-area">
-            <Button on:click={handleSubmit} large color={buttonColor} background_color={buttonBackgroundColor} shadow_color={buttonShadowColor}>Submit</Button>
+            <Button submit large color={buttonColor} background_color={buttonBackgroundColor} shadow_color={buttonShadowColor}>Submit</Button>
         </div>
     </form>
 </ContentBox>

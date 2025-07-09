@@ -3,11 +3,23 @@
     export let background_color = "white";
     export let shadow_color = "#666";
     export let large = false;
+
+    export let submit = false;
+
+    if (submit) {
+
+    }
 </script>
 
-<button class:large on:click style="color: {color}; background-color: {background_color}; box-shadow: 0 3px {shadow_color}">
+{#if submit}
+<button type="submit" class:large on:click style="color: {color}; background-color: {background_color}; box-shadow: 0 3px {shadow_color}">
     <slot />
 </button>
+{:else}
+<button type="button" class:large on:click style="color: {color}; background-color: {background_color}; box-shadow: 0 3px {shadow_color}">
+    <slot />
+</button>
+{/if}
 
 <style>
     button {
