@@ -25,18 +25,22 @@
         rules: ""
     });
 
+    function isNameValid() {
+        return (nameInput.willValidate && (/^[a-zA-Z0-9 ,_-]*$/.test(fields.name)));
+    }
+
     let handleNameChange = () => {
-        if (!(/^[a-zA-Z0-9 ]*$/.test(fields.name))) {
-            nameInput.classList.add("invalid");
-            nameInput.setAttribute("aria-invalid", "true");
-        } else if (nameInput.willValidate) {
+        if (isNameValid()) {
             nameInput.classList.remove("invalid");
             nameInput.setAttribute("aria-invalid", "false");
+        } else {
+            nameInput.classList.add("invalid");
+            nameInput.setAttribute("aria-invalid", "true");
         }
     }
 
     let handleSubmit = () => {
-
+        
     }
 </script>
 
