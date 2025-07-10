@@ -1,50 +1,21 @@
-<script>
+<script lang="ts">
 	import { goto } from "$app/navigation";
     import Button from "$lib/components/Button.svelte";
 	import ContentBox from "$lib/components/ContentBox.svelte";
+    import type { PageProps } from './$types';
+
+	let { data }: PageProps = $props();
 
     let gotoNew = () => {
         goto("/rulesets/new");
     }
-
-    let rulesets = [
-        {
-            id: 0,
-            page: "0-kazan-trolleybuses",
-            name: "Kazan Trolleybuses",
-            place: "Kazan",
-            description: "A ruleset for medium-sized games across Kazan using only trolleybus lines.",
-            players: "4 players",
-            tags: ["Medium games", "Trolleybus"],
-            rules: `
-            - Use JetLag's Medium-size game rules
-            - Use only your feet, and Kazan Trolleybus lines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 13
-            - One-day game period: 14 hours
-            - Two-day game period: 10 hours per day, with 14 hours for rest period
-            `
-        },
-        {
-            id: 1,
-            page: "1-moscow-subway",
-            name: "Moscow Subway",
-            place: "Moscow",
-            description: "A ruleset for large-sized games across Moscow's Subway System.",
-            players: "6 players",
-            tags: ["Large games", "Subway"],
-            rules: `
-            - Use JetLag's Large-size game rules
-            - Use only your feet, and Moscow Subway lines
-            - Two-day game period: 10 hours per day, with 14 hours for rest period
-            `
-        }
-    ]
 </script>
 
 <ContentBox>
     <Button on:click={gotoNew} color="white" background_color="#1a1" shadow_color="#151">
         Add a ruleset
     </Button>
-    {#each rulesets as ruleset}
+    {#each data.rulesets as ruleset}
         <a class="ruleset" href="/rulesets/{ruleset.page}">
             <div class="ruleset-header">
                 <h2 class="ruleset-name">{ruleset.name}</h2>

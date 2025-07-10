@@ -1,15 +1,16 @@
+import { db } from '$lib/server/db';
+import { rulesets } from '$lib/server/db/schema';
 import { fail, type Actions } from '@sveltejs/kit';
-
 
 export const actions: Actions = {
     default: async ({ request }) => {
         const formData = await request.formData();
         const data = {
+            page: formData.get("name")?.toString().toLowerCase().replace(" ", "_"),
             name: formData.get("name")?.toString() || "",
             description: formData.get("description")?.toString() || "",
             place: formData.get("place")?.toString() || "",
-            teams: Number(formData.get("teams")),
-            players: Number(formData.get("players")),
+            players: formData.get("teams")?.toString() + " teams of " + formData.get("players")?.toString() + "players",
             rules: formData.get("rules")?.toString() || ""
         };
 
@@ -28,12 +29,6 @@ export const actions: Actions = {
         else if (data.place.length < 2) errors.push({ field: "place", message: "Place name is too short" });
         else if (data.place.length > 26) errors.push({ field: "place", message: "Place name is too long" });
 
-        if (data.teams < 2) errors.push({ field: "teams", message: "Teams cannot be fewer than 2" });
-        else if (data.teams > 6) errors.push({ field: "teams", message: "Teams cannot be more than 6" });
-
-        if (data.players < 1) errors.push({ field: "players", message: "Players cannot be fewer than 1" });
-        else if (data.players > 6) errors.push({ field: "players", message: "Players cannot be more than 6" });
-
         if (data.rules.length > 1000) errors.push({ field: "rules", message: "Rules section is too long" });
         else if (data.rules.includes("<script>")) errors.push({ field: "rules", message: "Invalid rules" });
         
@@ -44,6 +39,21 @@ export const actions: Actions = {
             });
         }
 
-        // TODO db shenans
+        try {
+            // Insert into Neon database using Drizzle
+            await db.insert(rulesets).values({
+                page: data.page!,
+                name: data.name,
+                description: data.description,
+                place: data.place,
+                players: data.players,
+                rules: data.rules
+            });
+        } catch (error) {
+            console.error('Database error:', error);
+            return fail(500, { 
+                errors: ['Failed to create ruleset. Please try again.'] 
+            });
+        }
     }
 };
