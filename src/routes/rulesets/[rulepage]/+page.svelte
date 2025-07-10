@@ -12,7 +12,8 @@
 		goto('/rulesets');
 	};
 
-	let rules = $state(data.ruleset.rules ? data.ruleset.rules : 'There are no additional rules');
+	const rulesLoaded = data.ruleset.rules ? data.ruleset.rules : 'There are no additional rules';
+	let rules = $state(rulesLoaded);
 
 	let deleteModal = $state(false);
 	let deleting = $state(false);
@@ -42,7 +43,7 @@
 
 	let editing = $state(false);
 	let saving = $state(false);
-	let rulesEdit = $state(rules);
+	let rulesEdit = $state(rulesLoaded);
 	let error: string[] = $state([]);
 	let editFirst = () => {
 		editing = true;
