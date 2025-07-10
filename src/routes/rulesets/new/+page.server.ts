@@ -1,4 +1,4 @@
-import { db } from '$lib/server/db';
+import { db, getNextPageId } from '$lib/server/db';
 import { rulesets } from '$lib/server/db/schema';
 import { fail, type Actions } from '@sveltejs/kit';
 import { max } from 'drizzle-orm';
@@ -41,10 +41,7 @@ export const actions: Actions = {
         }
 
         try {
-            const possiblePageIds = await db.select({id: max(rulesets.id)}).from(rulesets);
-            let pageId: number;
-            if (possiblePageIds[0].id === null) pageId = 0;
-            else pageId = possiblePageIds[0].id!;
+            const pageId = await getNextPageId();
             data.page = (pageId.toString() + "_" + formData.get("name")?.toString().toLowerCase().replaceAll(" ", "_")) || "";
             await db.insert(rulesets).values({
                 page: data.page!,

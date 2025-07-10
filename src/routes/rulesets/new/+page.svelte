@@ -116,25 +116,25 @@
     </div>
     <form class="input-box" onsubmit={handleSubmit}>
         <div class="input-field">
-            <input class="name invalid" aria-label="Ruleset name" type="text" placeholder="New Ruleset" minlength="5" maxlength="30" required bind:value={fields.name} bind:this={nameInput} oninput={handleNameChange} />
+            <input class="name invalid" aria-label="Ruleset name" type="text" placeholder="New Ruleset" minlength="5" maxlength="30" required disabled={submitting} bind:value={fields.name} bind:this={nameInput} oninput={handleNameChange} />
         </div>
         <div class="input-field">
-            <input class="description" aria-label="Ruleset description" type="text" placeholder="Description" minlength="16" maxlength="240" required bind:value={fields.description} />
+            <input class="description" aria-label="Ruleset description" type="text" placeholder="Description" minlength="16" maxlength="240" required disabled={submitting} bind:value={fields.description} />
         </div>
         <hr>
         <div class="input-field">
-            <label class="hint" for="place">Town, city, or district:</label><input class="place" id="place" type="text" placeholder="e.g. New York City" minlength="2" maxlength="26" required bind:value={fields.place} />
+            <label class="hint" for="place">Town, city, or district:</label><input class="place" id="place" type="text" placeholder="e.g. New York City" minlength="2" maxlength="26" required disabled={submitting} bind:value={fields.place} />
         </div>
         <div class="input-field">
             <span class="hint">Recommended players:</span>
-            <input class="players" aria-label="Recommended team count" id="teams" type="number" min=2 max=6 required bind:value={fields.teams} />
+            <input class="players" aria-label="Recommended team count" id="teams" type="number" min=2 max=6 required disabled={submitting} bind:value={fields.teams} />
             <i>teams of</i>
-            <input class="players" aria-label="Recommended players per team" id="players" type="number" min=1 max=6 required bind:value={fields.players} />
+            <input class="players" aria-label="Recommended players per team" id="players" type="number" min=1 max=6 required disabled={submitting} bind:value={fields.players} />
             <i class="desktop-hint">players</i>
         </div>
         <hr>
         <span class="hint" style="display: block; width: 200px">Describe any specific rules</span>
-        <textarea id="rules" rows=12 cols=40 placeholder="- Use JetLag's Small-size game rules" maxlength="1000" bind:value={fields.rules}></textarea>
+        <textarea id="rules" rows=12 cols=40 placeholder="- Use JetLag's Small-size game rules" maxlength="1000" disabled={submitting} bind:value={fields.rules}></textarea>
         {#each errors as error}
             <div class="validation-error">{error.error}</div>
         {/each}
