@@ -36,6 +36,10 @@
         filter: brightness(110%);
     }
 
+    button:active {
+        filter: brightness(85%);
+    }
+
     .large {
         font-size: 1.1rem;
         padding-left: 1.4em;
