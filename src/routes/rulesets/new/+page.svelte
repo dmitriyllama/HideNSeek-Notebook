@@ -38,7 +38,6 @@
 
     let handleSubmit = async (event: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement}) => {
         event.preventDefault();
-
         if (submitting) return;
         submitting = true;
 
@@ -115,7 +114,7 @@
         </ul>
         <p>You will need to reference a rulebook from the <a class="inline-link" href="https://store.nebula.tv/products/hideandseek" target="_blank">physical copy of Hide+Seek</a> or the <a class="inline-link" href="https://jetlag.collinj.dev/docs/quick_start_guide/" target="_blank">unofficial online version by Collin James</a>.</p>
     </div>
-    <form class="input-box" method="POST" onsubmit={handleSubmit}>
+    <form class="input-box" onsubmit={handleSubmit}>
         <div class="input-field">
             <input class="name invalid" aria-label="Ruleset name" type="text" placeholder="New Ruleset" minlength="5" maxlength="30" required bind:value={fields.name} bind:this={nameInput} oninput={handleNameChange} />
         </div>

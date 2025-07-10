@@ -43,3 +43,12 @@ export async function getRulesetFromPage(link: string) {
     }
     error(404, { message: "Not Found" });
 }
+
+export async function deletePage(link: string) {
+    try {
+        await db.delete(rulesets).where(eq(rulesets.page, link));
+    } catch (e) {
+        console.error(e);
+        error(500, { message: "Server error" });
+    }
+}
