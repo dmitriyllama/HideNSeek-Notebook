@@ -4,6 +4,7 @@ import * as schema from './schema';
 import { NETLIFY_DATABASE_URL } from '$env/static/private';
 import { rulesets } from './schema';
 import { eq } from 'drizzle-orm';
+import { error } from '@sveltejs/kit';
 
 if (!NETLIFY_DATABASE_URL) throw new Error('DATABASE_URL is not set');
 
@@ -12,21 +13,33 @@ const client = neon(NETLIFY_DATABASE_URL);
 export const db = drizzle(client, { schema });
 
 export async function getRulesets() {
-    return db.select({
-        page: rulesets.page,
-        name: rulesets.name,
-        description: rulesets.description,
-        place: rulesets.place,
-        players: rulesets.players
-    }).from(rulesets);
+    try {    
+        return await db.select({
+            page: rulesets.page,
+            name: rulesets.name,
+            description: rulesets.description,
+            place: rulesets.place,
+            players: rulesets.players
+        }).from(rulesets);
+    } catch (e) {
+        console.error(e);
+        error(500, { message: "Server error" });
+    }
 }
 
-export async function getRuleset(link: string) {
-    return db.select({
-        name: rulesets.name,
-        description: rulesets.description,
-        place: rulesets.place,
-        players: rulesets.players,
-        rules: rulesets.rules
-    }).from(rulesets).where(eq(rulesets.page, link));
+export async function getRulesetFromPage(link: string) {
+    try {
+        let ruleset = await db.select({
+            name: rulesets.name,
+            description: rulesets.description,
+            place: rulesets.place,
+            players: rulesets.players,
+            rules: rulesets.rules
+        }).from(rulesets).where(eq(rulesets.page, link));
+        if (ruleset.length !== 0) return ruleset[0];
+    } catch (e) {
+        console.error(e);
+        error(500, { message: "Server error" });
+    }
+    error(404, { message: "Not Found" });
 }

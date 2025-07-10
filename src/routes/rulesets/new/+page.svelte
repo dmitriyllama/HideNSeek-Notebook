@@ -5,10 +5,6 @@
 
     let submitting = $state(false);
 
-    let buttonColor = "white";
-    let buttonBackgroundColor = "#1a1";
-    let buttonShadowColor = "#151";
-
     let nameInput: HTMLInputElement;
 
     let goBack = () => {
@@ -144,7 +140,7 @@
             <div class="validation-error">{error.error}</div>
         {/each}
         <div class="submit-area">
-            <Button submit large color={buttonColor} background_color={buttonBackgroundColor} shadow_color={buttonShadowColor}>Submit</Button>
+            <Button submit large color=white background_color=#1a1 shadow_color=#151>Submit</Button>
             <div class="submitting" hidden={!submitting}>Submitting...</div>
         </div>
     </form>

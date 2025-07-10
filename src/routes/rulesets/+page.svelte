@@ -11,6 +11,11 @@
     }
 </script>
 
+<svelte:head>
+    <title>Rulesets — Hide+Seek Notebook</title>
+    <meta name="description" content="Look for rulesets to play Hide+Seek in some cities">
+</svelte:head>
+
 <ContentBox>
     <Button on:click={gotoNew} color="white" background_color="#1a1" shadow_color="#151">
         Add a ruleset

@@ -43,10 +43,8 @@ export const actions: Actions = {
         try {
             const possiblePageIds = await db.select({id: max(rulesets.id)}).from(rulesets);
             let pageId: number;
-            console.log(possiblePageIds);
             if (possiblePageIds[0].id === null) pageId = 0;
             else pageId = possiblePageIds[0].id!;
-            console.log(pageId);
             data.page = (pageId.toString() + "_" + formData.get("name")?.toString().toLowerCase().replaceAll(" ", "_")) || "";
             await db.insert(rulesets).values({
                 page: data.page!,
