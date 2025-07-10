@@ -1,12 +1,13 @@
 import { db } from '$lib/server/db';
 import { rulesets } from '$lib/server/db/schema';
 import { fail, type Actions } from '@sveltejs/kit';
+import { max } from 'drizzle-orm';
 
 export const actions: Actions = {
     default: async ({ request }) => {
         const formData = await request.formData();
         const data = {
-            page: formData.get("name")?.toString().toLowerCase().replace(" ", "_"),
+            page: "",
             name: formData.get("name")?.toString() || "",
             description: formData.get("description")?.toString() || "",
             place: formData.get("place")?.toString() || "",
@@ -40,6 +41,11 @@ export const actions: Actions = {
         }
 
         try {
+            const possiblePageId = await db.select({id: max(rulesets.id)}).from(rulesets);
+            let pageId: number;
+            if (possiblePageId.length == 0) pageId = 0;
+            else pageId = possiblePageId[0].id!;
+            data.page = (pageId.toString() + formData.get("name")?.toString().toLowerCase().replaceAll(" ", "_")) || "";
             // Insert into Neon database using Drizzle
             await db.insert(rulesets).values({
                 page: data.page!,
