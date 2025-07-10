@@ -1,8 +1,9 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
 	import Button from '$lib/components/Button.svelte';
 	import ContentBox from '$lib/components/ContentBox.svelte';
+
+    let submitting = $state(false);
 
     let buttonColor = "white";
     let buttonBackgroundColor = "#1a1";
@@ -41,6 +42,9 @@
 
     let handleSubmit = async (event: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement}) => {
         event.preventDefault();
+
+        if (submitting) return;
+        submitting = true;
 
         let newErrors = [];
         if (fields.name.length == 0) newErrors.push({error: "Name is empty."});
@@ -86,6 +90,7 @@
 
             const result = await response.json();
 
+            submitting = false;
             if (result.status === 400) {
                 errors = [{ error: 'Invalid submission' }];
             } else if (!response.ok) {
@@ -140,6 +145,7 @@
         {/each}
         <div class="submit-area">
             <Button submit large color={buttonColor} background_color={buttonBackgroundColor} shadow_color={buttonShadowColor}>Submit</Button>
+            <div class="submitting" hidden={!submitting}>Submitting...</div>
         </div>
     </form>
 </ContentBox>
@@ -264,7 +270,13 @@
 
     .submit-area {
         display: flex;
+        flex-flow: column nowrap;
         justify-content: center;
+        align-items: center;
+        margin-top: 10px;
+    }
+
+    .submitting {
         margin-top: 10px;
     }
 
