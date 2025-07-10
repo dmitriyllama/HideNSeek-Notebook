@@ -1,13 +1,13 @@
 import { drizzle } from 'drizzle-orm/neon-http';
 import { neon } from '@netlify/neon';
 import * as schema from './schema';
-import { env } from '$env/dynamic/private';
+import { NETLIFY_DATABASE_URL } from '$env/static/private';
 import { rulesets } from './schema';
 import { eq } from 'drizzle-orm';
 
-if (!env.NETLIFY_DATABASE_URL) throw new Error('DATABASE_URL is not set');
+if (!NETLIFY_DATABASE_URL) throw new Error('DATABASE_URL is not set');
 
-const client = neon(env.NETLIFY_DATABASE_URL);
+const client = neon(NETLIFY_DATABASE_URL);
 
 export const db = drizzle(client, { schema });
 
