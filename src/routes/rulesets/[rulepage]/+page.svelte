@@ -1,11 +1,16 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import Button from '$lib/components/Button.svelte';
+	import ButtonBack from '$lib/components/ButtonBack.svelte';
 	import ContentBox from '$lib/components/ContentBox.svelte';
 	import Modal from '$lib/components/Modal.svelte';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
+
+	let goBack = () => {
+		goto('/rulesets');
+	};
 
 	let rules = $state(data.ruleset.rules ? data.ruleset.rules : 'There are no additional rules');
 
@@ -96,6 +101,7 @@
 	</form>
 </Modal>
 <ContentBox>
+	<ButtonBack on:click={goBack} />
 	<div class="card-box">
 		<h1>{data.ruleset.name}</h1>
 		<p>{data.ruleset.description}</p>

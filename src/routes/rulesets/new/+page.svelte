@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import Button from '$lib/components/Button.svelte';
+	import ButtonBack from '$lib/components/ButtonBack.svelte';
 	import ContentBox from '$lib/components/ContentBox.svelte';
 
 	let submitting = $state(false);
@@ -111,8 +112,7 @@
 </svelte:head>
 
 <ContentBox>
-	<Button on:click={goBack} color="white" background_color="#a11" shadow_color="#511">Return</Button
-	>
+	<ButtonBack on:click={goBack} />
 	<div class="info">
 		<p>Your ruleset should include the following details, which are missing from the rulebook:</p>
 		<ul>
