@@ -11,7 +11,7 @@ export const actions: Actions = {
             name: formData.get("name")?.toString() || "",
             description: formData.get("description")?.toString() || "",
             place: formData.get("place")?.toString() || "",
-            players: formData.get("teams")?.toString() + " teams of " + formData.get("players")?.toString() + "players",
+            players: formData.get("teams")?.toString() + " teams of " + formData.get("players")?.toString() + " players",
             rules: formData.get("rules")?.toString() || ""
         };
 
@@ -41,12 +41,13 @@ export const actions: Actions = {
         }
 
         try {
-            const possiblePageId = await db.select({id: max(rulesets.id)}).from(rulesets);
+            const possiblePageIds = await db.select({id: max(rulesets.id)}).from(rulesets);
             let pageId: number;
-            if (possiblePageId.length == 0) pageId = 0;
-            else pageId = possiblePageId[0].id!;
-            data.page = (pageId.toString() + formData.get("name")?.toString().toLowerCase().replaceAll(" ", "_")) || "";
-            // Insert into Neon database using Drizzle
+            console.log(possiblePageIds);
+            if (possiblePageIds[0].id === null) pageId = 0;
+            else pageId = possiblePageIds[0].id!;
+            console.log(pageId);
+            data.page = (pageId.toString() + "_" + formData.get("name")?.toString().toLowerCase().replaceAll(" ", "_")) || "";
             await db.insert(rulesets).values({
                 page: data.page!,
                 name: data.name,
