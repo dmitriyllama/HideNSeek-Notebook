@@ -3,7 +3,7 @@ import { neon } from '@netlify/neon';
 import * as schema from './schema';
 import { NETLIFY_DATABASE_URL } from '$env/static/private';
 import { rulesets } from './schema';
-import { eq } from 'drizzle-orm';
+import { eq, max } from 'drizzle-orm';
 import { error } from '@sveltejs/kit';
 
 if (!NETLIFY_DATABASE_URL) throw new Error('DATABASE_URL is not set');
@@ -11,6 +11,13 @@ if (!NETLIFY_DATABASE_URL) throw new Error('DATABASE_URL is not set');
 const client = neon(NETLIFY_DATABASE_URL);
 
 export const db = drizzle(client, { schema });
+
+export async function getNextPageId() {
+    const possiblePageIds = await db.select({id: max(rulesets.id)}).from(rulesets);
+    let pageId: number;
+    if (possiblePageIds[0].id === null) return 0;
+    return possiblePageIds[0].id!
+}
 
 export async function getRulesets() {
     try {    
@@ -51,4 +58,8 @@ export async function deletePage(link: string) {
         console.error(e);
         error(500, { message: "Server error" });
     }
+}
+
+export async function updateRules(link: string, rules: { rules: string }) {
+    await db.update(rulesets).set(rules).where(eq(rulesets.page, link));
 }

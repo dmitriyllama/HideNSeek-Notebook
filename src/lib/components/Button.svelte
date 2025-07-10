@@ -6,20 +6,14 @@
 
     export let submit = false;
 
-    if (submit) {
+    export let hidden = false;
 
-    }
+    const type = submit ? "submit" : "button";
 </script>
 
-{#if submit}
-<button type="submit" class:large on:click style="color: {color}; background-color: {background_color}; box-shadow: 0 3px {shadow_color}">
+<button {type} class:large class:hidden on:click style="color: {color}; background-color: {background_color}; box-shadow: 0 3px {shadow_color}">
     <slot />
 </button>
-{:else}
-<button type="button" class:large on:click style="color: {color}; background-color: {background_color}; box-shadow: 0 3px {shadow_color}">
-    <slot />
-</button>
-{/if}
 
 <style>
     button {
@@ -44,5 +38,9 @@
         font-size: 1.1rem;
         padding-left: 1.4em;
         padding-right: 1.4em;
+    }
+
+    .hidden {
+        display: none;
     }
 </style>
