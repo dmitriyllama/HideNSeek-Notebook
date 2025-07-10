@@ -1,4 +1,3 @@
-
 import { pgTable, serial, text, timestamp, varchar } from 'drizzle-orm/pg-core';
 
 export const rulesets = pgTable('rulesets', {
@@ -9,5 +8,5 @@ export const rulesets = pgTable('rulesets', {
 	place: varchar('place', { length: 26 }).notNull(),
 	players: varchar('players', { length: 21 }).notNull(),
 	rules: text('rules'),
-	createdAt: timestamp('created_at').defaultNow(),
+	createdAt: timestamp('created_at').defaultNow()
 });

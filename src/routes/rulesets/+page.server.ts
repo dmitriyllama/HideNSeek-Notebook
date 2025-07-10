@@ -1,7 +1,7 @@
-import { getRulesets } from '$lib/server/db'
+import { getRulesets } from '$lib/server/db';
 
 export const load = async () => {
-    return {
-        rulesets: await getRulesets()
-    };
+	return {
+		rulesets: await getRulesets()
+	};
 };
