@@ -66,7 +66,7 @@
 		if (fields.rules.length > 1000) newErrors.push({ error: 'Rules section is too long' });
 
 		errors = newErrors;
-	}
+	};
 
 	let handleSubmit = async (
 		event: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement }
@@ -225,7 +225,14 @@
 			<div class="validation-error">{error.error}</div>
 		{/each}
 		<div class="submit-area">
-			<Button submit on:click={seeErrors} large color="white" background_color="#1a1" shadow_color="#151">Submit</Button>
+			<Button
+				submit
+				on:click={seeErrors}
+				large
+				color="white"
+				background_color="#1a1"
+				shadow_color="#151">Submit</Button
+			>
 			<div class="submitting" hidden={!submitting}>Submitting...</div>
 		</div>
 	</form>
