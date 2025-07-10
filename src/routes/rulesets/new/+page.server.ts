@@ -1,7 +1,6 @@
 import { db, getNextPageId } from '$lib/server/db';
 import { rulesets } from '$lib/server/db/schema';
 import { fail, type Actions } from '@sveltejs/kit';
-import { max } from 'drizzle-orm';
 
 export const actions: Actions = {
 	default: async ({ request }) => {

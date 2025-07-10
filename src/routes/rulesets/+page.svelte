@@ -20,7 +20,7 @@
 	<Button on:click={gotoNew} color="white" background_color="#1a1" shadow_color="#151">
 		Add a ruleset
 	</Button>
-	{#each data.rulesets as ruleset}
+	{#each data.rulesets as ruleset (ruleset.page)}
 		<a class="ruleset" href="/rulesets/{ruleset.page}">
 			<div class="ruleset-header">
 				<h2 class="ruleset-name">{ruleset.name}</h2>

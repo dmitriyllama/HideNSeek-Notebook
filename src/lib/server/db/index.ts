@@ -14,7 +14,6 @@ export const db = drizzle(client, { schema });
 
 export async function getNextPageId() {
 	const possiblePageIds = await db.select({ id: max(rulesets.id) }).from(rulesets);
-	let pageId: number;
 	if (possiblePageIds[0].id === null) return 0;
 	return possiblePageIds[0].id!;
 }
@@ -38,7 +37,7 @@ export async function getRulesets() {
 
 export async function getRulesetFromPage(link: string) {
 	try {
-		let ruleset = await db
+		const ruleset = await db
 			.select({
 				name: rulesets.name,
 				description: rulesets.description,

@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
 	import Button from '$lib/components/Button.svelte';
 	import ButtonBack from '$lib/components/ButtonBack.svelte';
@@ -221,7 +220,7 @@
 			disabled={submitting}
 			bind:value={fields.rules}
 		></textarea>
-		{#each errors as error}
+		{#each errors as error (error.error)}
 			<div class="validation-error">{error.error}</div>
 		{/each}
 		<div class="submit-area">

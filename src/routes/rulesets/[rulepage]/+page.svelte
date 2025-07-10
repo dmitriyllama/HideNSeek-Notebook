@@ -29,7 +29,7 @@
 		if (deleting) return;
 		deleting = true;
 
-		const response = await fetch('?/del', {
+		await fetch('?/del', {
 			method: 'POST',
 			body: new FormData(),
 			headers: {
@@ -124,7 +124,7 @@
 			disabled={saving}
 			hidden={!editing}>{rules}</textarea
 		>
-		{#each error as e}
+		{#each error as e (e)}
 			<div class="error">{e}</div>
 		{/each}
 		<form class="control-buttons" onsubmit={editFinal}>

@@ -9,7 +9,7 @@ export const load: PageServerLoad = async ({ params }) => {
 };
 
 export const actions: Actions = {
-	del: async ({ request, params }) => {
+	del: async ({ params }) => {
 		await deletePage(params.rulepage!);
 	},
 
@@ -24,6 +24,7 @@ export const actions: Actions = {
 		try {
 			await updateRules(params.rulepage!, data);
 		} catch (e) {
+			console.error(e);
 			return fail(500);
 		}
 	}
