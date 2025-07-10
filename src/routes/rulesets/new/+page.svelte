@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
 	import Button from '$lib/components/Button.svelte';
 	import ButtonBack from '$lib/components/ButtonBack.svelte';
@@ -37,13 +38,7 @@
 
 	let errors: { error: string }[] = $state([]);
 
-	let handleSubmit = async (
-		event: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement }
-	) => {
-		event.preventDefault();
-		if (submitting) return;
-		submitting = true;
-
+	let seeErrors = async () => {
 		let newErrors = [];
 		if (fields.name.length == 0) newErrors.push({ error: 'Name is empty.' });
 		else if (fields.name.length < 5) newErrors.push({ error: 'Name is too short.' });
@@ -71,6 +66,16 @@
 		if (fields.rules.length > 1000) newErrors.push({ error: 'Rules section is too long' });
 
 		errors = newErrors;
+	}
+
+	let handleSubmit = async (
+		event: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement }
+	) => {
+		event.preventDefault();
+		if (submitting) return;
+		submitting = true;
+
+		seeErrors();
 
 		if (errors.length == 0) {
 			const formData = new FormData(event.currentTarget);
@@ -220,7 +225,7 @@
 			<div class="validation-error">{error.error}</div>
 		{/each}
 		<div class="submit-area">
-			<Button submit large color="white" background_color="#1a1" shadow_color="#151">Submit</Button>
+			<Button submit on:click={seeErrors} large color="white" background_color="#1a1" shadow_color="#151">Submit</Button>
 			<div class="submitting" hidden={!submitting}>Submitting...</div>
 		</div>
 	</form>
